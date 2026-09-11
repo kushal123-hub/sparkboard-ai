@@ -108,10 +108,12 @@ export const updateCard = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => updateSchema.parse(input))
   .handler(async ({ data, context }): Promise<Card> => {
     const { id, ...rest } = data;
-    const patch: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(rest)) {
-      if (value !== undefined) patch[key] = value;
-    }
+    const patch: { title?: string; description?: string; priority?: string; labels?: string[] } =
+      {};
+    if (rest.title !== undefined) patch.title = rest.title;
+    if (rest.description !== undefined) patch.description = rest.description;
+    if (rest.priority !== undefined) patch.priority = rest.priority;
+    if (rest.labels !== undefined) patch.labels = rest.labels;
     const { data: row, error } = await context.supabase
       .from("cards")
       .update(patch)
