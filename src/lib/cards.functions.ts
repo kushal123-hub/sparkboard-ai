@@ -107,7 +107,11 @@ export const updateCard = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => updateSchema.parse(input))
   .handler(async ({ data, context }): Promise<Card> => {
-    const { id, ...patch } = data;
+    const { id, ...rest } = data;
+    const patch: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(rest)) {
+      if (value !== undefined) patch[key] = value;
+    }
     const { data: row, error } = await context.supabase
       .from("cards")
       .update(patch)
