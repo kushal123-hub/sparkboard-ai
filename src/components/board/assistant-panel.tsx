@@ -1,6 +1,6 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 
 import {
@@ -18,7 +18,7 @@ import {
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import atlasMark from "@/assets/atlas-mark.png.asset.json";
+import atlasMark from "@/assets/atlas-mark.png";
 import { cn } from "@/lib/utils";
 
 const SUGGESTIONS = [
@@ -37,7 +37,6 @@ export function AssistantPanel({
   boardVersion: number;
 }) {
   const [input, setInput] = useState("");
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const { messages, sendMessage, status, error } = useChat({
     id: `assistant-${boardVersion}`,
@@ -52,10 +51,6 @@ export function AssistantPanel({
   });
 
   const busy = status === "submitted" || status === "streaming";
-
-  useEffect(() => {
-    if (open) textareaRef.current?.focus();
-  }, [open, status]);
 
   const submit = (text: string) => {
     const value = text.trim();
@@ -74,7 +69,7 @@ export function AssistantPanel({
     >
       <header className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
         <div className="flex items-center gap-3">
-          <img src={atlasMark.url} alt="" className="size-9 rounded-xl" />
+          <img src={atlasMark} alt="" className="size-9 rounded-xl" />
           <div>
             <p className="text-sm font-semibold text-foreground">Atlas</p>
             <p className="text-xs text-muted-foreground">Knows what's on your board</p>
@@ -140,7 +135,7 @@ export function AssistantPanel({
           multiple={false}
         >
           <PromptInputTextarea
-            ref={textareaRef}
+            autoFocus
             value={input}
             placeholder="Ask about your board…"
             onChange={(event) => setInput(event.target.value)}
