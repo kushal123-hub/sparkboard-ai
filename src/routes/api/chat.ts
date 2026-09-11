@@ -98,7 +98,7 @@ export const Route = createFileRoute("/api/chat")({
             "what to focus on next, and short summaries. Be concise, warm and concrete, and refer to cards by title. " +
             "You can only read the board — if the user asks you to change it, explain that they can drag cards or edit them directly.\n\n" +
             `Current board (columns: To Do, In Progress, Done):\n${board}`,
-          messages: convertToModelMessages(messages),
+          messages: await convertToModelMessages(messages),
           providerOptions: {
             openai: {
               forceReasoning: true,
